@@ -1,7 +1,9 @@
 package app
 
 import (
-	"github.com/revel/revel"
+  "fmt"
+  "github.com/revel/revel"
+  "net/http"
 )
 
 var (
@@ -36,6 +38,13 @@ func init() {
 	// revel.OnAppStart(ExampleStartupScript)
 	// revel.OnAppStart(InitDB)
 	// revel.OnAppStart(FillCache)
+
+  httpRedirectServer := &http.Server{Addr: ":80", Handler: http.HandlerFunc(
+    func(w http.ResponseWriter, r *http.Request) {
+      http.Redirect(w, r, fmt.Sprintf("https://%s%s", r.Host, r.RequestURI),
+        http.StatusMovedPermanently)
+    })}
+  go httpRedirectServer.ListenAndServe()
 }
 
 // HeaderFilter adds common security headers
@@ -57,3 +66,5 @@ var HeaderFilter = func(c *revel.Controller, fc []revel.Filter) {
 //		// Dev mode
 //	}
 //}
+
+
