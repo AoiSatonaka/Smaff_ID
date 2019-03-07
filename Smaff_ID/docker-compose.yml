@@ -1,0 +1,20 @@
+
+#Windows(dockerToolBox)で使用する場合は文字コードをCP932(windows-31j)にする。
+version: '3'
+services:
+  db:
+    image: mysql:5.7 #mysql5.7が準備されているimageを指定
+    environment:
+      - MYSQL_ROOT_PASSWORD= alpine #rootのパスワード
+      - MYSQL_DATABASE=Smaff_ID #revelデータベースの作成
+      - MYSQL_USER=a.satonaka #revelユーザの作成
+      - MYSQL_PASSWORD=satochan #revelユーザのパスワード
+  web:
+    build: . #Dockerfileをビルド
+    command: revel run myapp #docker-compose up の際にアプリケーション実行
+    volumes:
+      - ./Smaff_ID:/go/src/myapp #作成したフォルダにアプリケーションをマウント
+    ports:
+      - 443:443 #ポート443番の開放
+    depends_on:
+      - db #dbとつなげる
